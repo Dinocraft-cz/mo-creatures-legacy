@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.BitSet;
 
 import drzhark.mocreatures.entity.IMoCTameable;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -14,14 +13,12 @@ public class MoCPetData {
 
     private NBTTagCompound ownerData = new NBTTagCompound();
     private NBTTagList tamedList = new NBTTagList();
-    private BitSet IDMap = new BitSet(Long.SIZE << 4);
-    private final String ownerName;
-    private ArrayList<Integer> usedPetIds = new ArrayList();
+    private final BitSet IDMap = new BitSet(Long.SIZE << 4);
+    private final ArrayList<Integer> usedPetIds = new ArrayList<>();
 
     public MoCPetData(IMoCTameable pet)
     {
         ownerData.setTag("TamedList", tamedList);
-        ownerName = MoCreatures.isServer() ? pet.getOwnerName() : Minecraft.getMinecraft().thePlayer.getCommandSenderName();
         //ownerData.setName("PetData");
     }
 
@@ -29,7 +26,6 @@ public class MoCPetData {
     {
         ownerData = nbt;
         tamedList = nbt.getTagList("TamedList", 10);
-        ownerName = owner;
         loadPetDataMap(nbt.getCompoundTag("PetIdData"));
     }
 
@@ -63,9 +59,9 @@ public class MoCPetData {
             if (nbt.hasKey("PetId") && nbt.getInteger("PetId") == id)
             {
                 tamedList.removeTag(i);
-                usedPetIds.remove(new Integer(id));
+                usedPetIds.remove(Integer.valueOf(id));
                 IDMap.clear(id); // clear bit so it can be reused again
-                if (usedPetIds.size() == 0)
+                if (usedPetIds.isEmpty())
                     IDMap.clear(); // fixes bug with ID 0 not able to be used again
                 ownerData.setTag("PetIdData", savePetDataMap());
                 return true;
@@ -109,15 +105,6 @@ public class MoCPetData {
         else return null;
     }
 
-    public boolean getInAmulet(int petId)
-    {
-        NBTTagCompound petData = getPetData(petId);
-        if (petData != null)
-        {
-            return petData.getBoolean("InAmulet");
-        }
-        return false;
-    }
 
     public void setInAmulet(int petId, boolean flag)
     {
@@ -137,13 +124,13 @@ public class MoCPetData {
         while (true)
         {
             next = IDMap.nextClearBit(next);
-            if (usedPetIds.contains(new Integer(next)))
+            if (usedPetIds.contains(next))
             {
                 IDMap.set(next);
             }
             else
             {
-                usedPetIds.add(new Integer(next));
+                usedPetIds.add(next);
                 return next;
             }
         }
@@ -187,9 +174,9 @@ public class MoCPetData {
             while (true)
             {
                 next = IDMap.nextClearBit(next);
-                if (!usedPetIds.contains(new Integer(next)))
+                if (!usedPetIds.contains(next))
                 {
-                    usedPetIds.add(new Integer(next));
+                    usedPetIds.add(next);
                 }
                 else break;
             }

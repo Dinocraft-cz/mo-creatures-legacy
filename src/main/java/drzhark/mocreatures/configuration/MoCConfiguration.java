@@ -3,7 +3,6 @@ package drzhark.mocreatures.configuration;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,6 +25,7 @@ import com.google.common.collect.ImmutableSet;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.relauncher.FMLInjectionData;
 
+@SuppressWarnings("NullableProblems")
 public class MoCConfiguration {
   public static final String CATEGORY_GENERAL = "general";
   
@@ -41,19 +41,20 @@ public class MoCConfiguration {
   
   public static final String NEW_LINE;
   
-  private static final Pattern CONFIG_START = Pattern.compile("START: \"([^\\\"]+)\"");
+  private static final Pattern CONFIG_START = Pattern.compile("START: \"([^\"]+)\"");
   
-  private static final Pattern CONFIG_END = Pattern.compile("END: \"([^\\\"]+)\"");
+  private static final Pattern CONFIG_END = Pattern.compile("END: \"([^\"]+)\"");
   
+  @SuppressWarnings("UnstableApiUsage")
   public static final CharMatcher allowedProperties = CharMatcher.JAVA_LETTER_OR_DIGIT.or(CharMatcher.anyOf("._-"));
   
   private static MoCConfiguration PARENT = null;
   
   File file;
   
-  public Map<String, MoCConfigCategory> categories = new TreeMap<String, MoCConfigCategory>();
+  public Map<String, MoCConfigCategory> categories = new TreeMap<>();
   
-  private Map<String, MoCConfiguration> children = new TreeMap<String, MoCConfiguration>();
+  private final Map<String, MoCConfiguration> children = new TreeMap<>();
   
   private boolean caseSensitiveCustomCategories;
   
@@ -66,7 +67,7 @@ public class MoCConfiguration {
   private boolean changed = false;
   
   static {
-    NEW_LINE = System.getProperty("line.separator");
+    NEW_LINE = System.lineSeparator();
   }
   
   public MoCConfiguration(File file) {
@@ -82,26 +83,19 @@ public class MoCConfiguration {
     } 
   }
   
-  public MoCConfiguration(File file, boolean caseSensitiveCustomCategories) {
-    this(file);
-    this.caseSensitiveCustomCategories = caseSensitiveCustomCategories;
-  }
-  
-  public MoCConfiguration(File file, boolean caseSensitiveCustomCategories, boolean useNewLine) {
-    this(file);
-  }
+
+
   
   public MoCProperty get(String category, String key) {
     MoCConfigCategory cat = getCategory(category);
     if (cat.containsKey(key)) {
-      MoCProperty prop = cat.get(key);
-      return prop;
+      return cat.get(key);
     } 
     return null;
   }
   
   public MoCProperty get(String category, String key, int defaultValue) {
-    return get(category, key, defaultValue, (String)null);
+    return get(category, key, defaultValue, null);
   }
   
   public MoCProperty get(String category, String key, int defaultValue, String comment) {
@@ -112,7 +106,7 @@ public class MoCConfiguration {
   }
   
   public MoCProperty get(String category, String key, boolean defaultValue) {
-    return get(category, key, defaultValue, (String)null);
+    return get(category, key, defaultValue, null);
   }
   
   public MoCProperty get(String category, String key, boolean defaultValue, String comment) {
@@ -123,7 +117,7 @@ public class MoCConfiguration {
   }
   
   public MoCProperty get(String category, String key, double defaultValue) {
-    return get(category, key, defaultValue, (String)null);
+    return get(category, key, defaultValue, null);
   }
   
   public MoCProperty get(String category, String key, double defaultValue, String comment) {
@@ -134,7 +128,7 @@ public class MoCConfiguration {
   }
   
   public MoCProperty get(String category, String key, String defaultValue) {
-    return get(category, key, defaultValue, (String)null);
+    return get(category, key, defaultValue, null);
   }
   
   public MoCProperty get(String category, String key, String defaultValue, String comment) {
@@ -142,7 +136,7 @@ public class MoCConfiguration {
   }
   
   public MoCProperty get(String category, String key, List<String> defaultValue) {
-    return get(category, key, defaultValue, (String)null);
+    return get(category, key, defaultValue, null);
   }
   
   public MoCProperty get(String category, String key, List<String> defaultValue, String comment) {
@@ -150,13 +144,13 @@ public class MoCConfiguration {
   }
   
   public MoCProperty get(String category, String key, int[] defaultValue) {
-    return get(category, key, defaultValue, (String)null);
+    return get(category, key, defaultValue, null);
   }
   
   public MoCProperty get(String category, String key, int[] defaultValue, String comment) {
-    List<String> values = new ArrayList<String>();
-    for (int i = 0; i < defaultValue.length; i++)
-      values.add(Integer.toString(defaultValue[i])); 
+    List<String> values = new ArrayList<>();
+    for (int i : defaultValue)
+      values.add(Integer.toString(i)); 
     MoCProperty prop = get(category, key, values, comment, MoCProperty.Type.INTEGER);
     if (!prop.isIntList())
       prop.valueList = values; 
@@ -164,13 +158,13 @@ public class MoCConfiguration {
   }
   
   public MoCProperty get(String category, String key, double[] defaultValue) {
-    return get(category, key, defaultValue, (String)null);
+    return get(category, key, defaultValue, null);
   }
   
   public MoCProperty get(String category, String key, double[] defaultValue, String comment) {
-    List<String> values = new ArrayList<String>();
-    for (int i = 0; i < defaultValue.length; i++)
-      values.add(Double.toString(defaultValue[i])); 
+    List<String> values = new ArrayList<>();
+    for (double i : defaultValue)
+      values.add(Double.toString(i)); 
     MoCProperty prop = get(category, key, values, comment, MoCProperty.Type.DOUBLE);
     if (!prop.isDoubleList())
       prop.valueList = values; 
@@ -178,13 +172,13 @@ public class MoCConfiguration {
   }
   
   public MoCProperty get(String category, String key, boolean[] defaultValue) {
-    return get(category, key, defaultValue, (String)null);
+    return get(category, key, defaultValue, null);
   }
   
   public MoCProperty get(String category, String key, boolean[] defaultValue, String comment) {
-    List<String> values = new ArrayList<String>();
-    for (int i = 0; i < defaultValue.length; i++)
-      values.add(Boolean.toString(defaultValue[i])); 
+    List<String> values = new ArrayList<>();
+    for (boolean i : defaultValue)
+      values.add(Boolean.toString(i)); 
     MoCProperty prop = get(category, key, values, comment, MoCProperty.Type.BOOLEAN);
     if (!prop.isBooleanList())
       prop.valueList = values; 
@@ -236,27 +230,21 @@ public class MoCConfiguration {
     return null;
   }
   
-  public boolean hasCategory(String category) {
-    return (categories.get(category) != null);
-  }
-  
-  public boolean hasKey(String category, String key) {
-    MoCConfigCategory cat = categories.get(category);
-    return (cat != null && cat.containsKey(key));
-  }
-  
+
   public void load() {
     if (PARENT != null && PARENT != this)
       return; 
     BufferedReader buffer = null;
     UnicodeInputStreamReader input = null;
     try {
-      if (file.getParentFile() != null)
+      if (file.getParentFile() != null) {
+        //noinspection ResultOfMethodCallIgnored
         file.getParentFile().mkdirs(); 
+      }
       if (!file.exists() && !file.createNewFile())
         return; 
       if (file.canRead()) {
-        input = new UnicodeInputStreamReader(new FileInputStream(file), defaultEncoding);
+        input = new UnicodeInputStreamReader(java.nio.file.Files.newInputStream(file.toPath()), defaultEncoding);
         defaultEncoding = input.getEncoding();
         buffer = new BufferedReader(input);
         MoCConfigCategory currentCat = null;
@@ -273,7 +261,7 @@ public class MoCConfiguration {
           Matcher end = CONFIG_END.matcher(line);
           if (start.matches()) {
             fileName = start.group(1);
-            categories = new TreeMap<String, MoCConfigCategory>();
+            categories = new TreeMap<>();
             continue;
           } 
           if (end.matches()) {
@@ -300,10 +288,11 @@ public class MoCConfiguration {
                   skip = true;
                   break;
                 case '"':
-                  if (quoted)
+                  if (quoted) {
                     quoted = false; 
-                  if (!quoted && nameStart == -1)
+                  } else if (nameStart == -1) {
                     quoted = true; 
+                  }
                   break;
                 case '{':
                   name = line.substring(nameStart, nameEnd + 1);
@@ -319,13 +308,13 @@ public class MoCConfiguration {
                   break;
                 case '}':
                   if (currentCat == null)
-                    throw new RuntimeException(String.format("Config file corrupt, attepted to close to many categories '%s:%d'", new Object[] { fileName, Integer.valueOf(lineNum) })); 
+                    throw new RuntimeException(String.format("Config file corrupt, attepted to close to many categories '%s:%d'", fileName, lineNum)); 
                   currentCat = currentCat.parent;
                   break;
                 case '=':
                   name = line.substring(nameStart, nameEnd + 1);
                   if (currentCat == null)
-                    throw new RuntimeException(String.format("'%s' has no scope in '%s:%d'", new Object[] { name, fileName, Integer.valueOf(lineNum) })); 
+                    throw new RuntimeException(String.format("'%s' has no scope in '%s:%d'", name, fileName, lineNum)); 
                   prop = new MoCProperty(name, line.substring(i + 1), type, true);
                   i = line.length();
                   currentCat.set(name, prop);
@@ -336,19 +325,18 @@ public class MoCConfiguration {
                   break;
                 case '<':
                   if (tmpList != null)
-                    throw new RuntimeException(String.format("Malformed list MoCProperty \"%s:%d\"", new Object[] { fileName, Integer.valueOf(lineNum) })); 
+                    throw new RuntimeException(String.format("Malformed list MoCProperty \"%s:%d\"", fileName, lineNum)); 
                   name = line.substring(nameStart, nameEnd + 1);
                   if (currentCat == null)
-                    throw new RuntimeException(String.format("'%s' has no scope in '%s:%d'", new Object[] { name, fileName, Integer.valueOf(lineNum) })); 
-                  tmpList = new ArrayList<String>();
+                    throw new RuntimeException(String.format("'%s' has no scope in '%s:%d'", name, fileName, lineNum)); 
+                  tmpList = new ArrayList<>();
                   if (line.length() > i + 1) {
                     if (line.charAt(i + 1) == '>') {
                       i++;
                     } else {
-                      line = line.substring(i + 1, line.length());
-                      String[] values = line.split(":|\\>");
-                      for (int j = 0; j < values.length; j++)
-                        tmpList.add(values[j]); 
+                      line = line.substring(i + 1);
+                      String[] values = line.split("[:>]");
+                      java.util.Collections.addAll(tmpList, values);
                       i = line.length() - 1;
                     } 
                   } else {
@@ -357,34 +345,35 @@ public class MoCConfiguration {
                   } 
                 case '>':
                   if (tmpList == null)
-                    throw new RuntimeException(String.format("Malformed list MoCProperty \"%s:%d\"", new Object[] { fileName, Integer.valueOf(lineNum) })); 
+                    throw new RuntimeException(String.format("Malformed list MoCProperty \"%s:%d\"", fileName, lineNum)); 
                   currentCat.set(name, new MoCProperty(name, tmpList, type));
                   name = null;
                   tmpList = null;
                   type = null;
                   break;
                 default:
-                  throw new RuntimeException(String.format("Unknown character '%s' in '%s:%d'", new Object[] { Character.valueOf(line.charAt(i)), fileName, Integer.valueOf(lineNum) }));
+                  throw new RuntimeException(String.format("Unknown character '%s' in '%s:%d'", line.charAt(i), fileName, lineNum));
               } 
             } 
           } 
           if (quoted)
-            throw new RuntimeException(String.format("Unmatched quote in '%s:%d'", new Object[] { fileName, Integer.valueOf(lineNum) })); 
+            throw new RuntimeException(String.format("Unmatched quote in '%s:%d'", fileName, lineNum)); 
           if (tmpList != null && !skip)
             tmpList.add(line.trim()); 
         } 
       } 
     } catch (IOException e) {
+      //noinspection CallToPrintStackTrace
       e.printStackTrace();
     } finally {
       if (buffer != null)
         try {
           buffer.close();
-        } catch (IOException e) {} 
+        } catch (IOException ignored) {} 
       if (input != null)
         try {
           input.close();
-        } catch (IOException e) {} 
+        } catch (IOException ignored) {} 
     } 
     resetChangedState();
   }
@@ -395,8 +384,10 @@ public class MoCConfiguration {
       return;
     } 
     try {
-      if (file.getParentFile() != null)
+      if (file.getParentFile() != null) {
+        //noinspection ResultOfMethodCallIgnored
         file.getParentFile().mkdirs(); 
+      }
       if (!file.exists() && !file.createNewFile())
         return; 
       if (file.canWrite()) {
@@ -416,6 +407,7 @@ public class MoCConfiguration {
         fos.close();
       } 
     } catch (IOException e) {
+      //noinspection CallToPrintStackTrace
       e.printStackTrace();
     } 
   }

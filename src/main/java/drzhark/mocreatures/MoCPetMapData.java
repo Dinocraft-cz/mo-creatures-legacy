@@ -2,7 +2,6 @@ package drzhark.mocreatures;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -19,7 +18,7 @@ import net.minecraftforge.common.DimensionManager;
 
 public class MoCPetMapData extends WorldSavedData
 {
-    private Map<String, MoCPetData> petMap = new TreeMap<String, MoCPetData>(String.CASE_INSENSITIVE_ORDER);
+    private final Map<String, MoCPetData> petMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 
     public MoCPetMapData(String par1Str)
     {
@@ -35,12 +34,7 @@ public class MoCPetMapData extends WorldSavedData
         return petMap.get(owner);
     }
 
-    public Map<String, MoCPetData> getPetMap()
-    {
-        return petMap;
-    }
-
-    public boolean removeOwnerPet(IMoCTameable pet, int petId)
+    public void removeOwnerPet(IMoCTameable pet, int petId)
     {
         if (petMap.get(pet.getOwnerName()) != null) // required since getInteger will always return 0 if no key is found
         {
@@ -48,10 +42,8 @@ public class MoCPetMapData extends WorldSavedData
            {
                markDirty();
                pet.setOwnerPetId(-1);
-               return true;
            }
         }
-        return false;
     }
 
     public void updateOwnerPet(IMoCTameable pet, NBTTagCompound petNBT)
@@ -60,8 +52,8 @@ public class MoCPetMapData extends WorldSavedData
         if (pet.getOwnerPetId() == -1 || petMap.get(pet.getOwnerName()) == null)
         {
             String owner = MoCreatures.isServer() ? pet.getOwnerName() : Minecraft.getMinecraft().thePlayer.getCommandSenderName();
-            MoCPetData petData = null;
-            int id = -1;
+            MoCPetData petData;
+            int id;
             if (petMap.containsKey(owner))
             {
                 petData = petMap.get(owner);
@@ -82,8 +74,7 @@ public class MoCPetMapData extends WorldSavedData
             MoCPetData petData = getPetData(owner);
             NBTTagCompound rootNBT = petData.getOwnerRootNBT();
             NBTTagList tag = rootNBT.getTagList("TamedList", 10);
-            int id = -1;
-            id = pet.getOwnerPetId();
+            int id = pet.getOwnerPetId();
 
             for (int i = 0; i < tag.tagCount(); i++)
             {
@@ -95,7 +86,7 @@ public class MoCPetMapData extends WorldSavedData
                     double posY = Math.round(petNBT.getTagList("Pos", 6).func_150309_d(1));
                     double posZ = Math.round(petNBT.getTagList("Pos", 6).func_150309_d(2));
                     // Update what we need for commands
-                    nbt.setTag("Pos", newDoubleNBTList(new double[] {posX, posY + ((Entity)pet).ySize, posZ}));
+                    nbt.setTag("Pos", newDoubleNBTList(posX, posY + ((Entity)pet).ySize, posZ));
                     nbt.setInteger("ChunkX", ((Entity)pet).chunkCoordX);
                     nbt.setInteger("ChunkY", ((Entity)pet).chunkCoordY);
                     nbt.setInteger("ChunkZ", ((Entity)pet).chunkCoordZ);
@@ -109,13 +100,10 @@ public class MoCPetMapData extends WorldSavedData
     protected NBTTagList newDoubleNBTList(double ... par1ArrayOfDouble)
     {
         NBTTagList nbttaglist = new NBTTagList();
-        double[] adouble = par1ArrayOfDouble;
         int i = par1ArrayOfDouble.length;
 
-        for (int j = 0; j < i; ++j)
-        {
-            double d1 = adouble[j];
-            nbttaglist.appendTag(new NBTTagDouble(d1));
+        for (double d1 : par1ArrayOfDouble) {
+            nbttaglist.appendTag(new NBTTagDouble(d1).copy());
         }
 
         return nbttaglist;
@@ -140,6 +128,7 @@ public class MoCPetMapData extends WorldSavedData
         return false;
     }
 
+    @SuppressWarnings("CallToPrintStackTrace")
     public void forceSave()
     {
         if (DimensionManager.getWorld(0) != null)
@@ -176,10 +165,9 @@ public class MoCPetMapData extends WorldSavedData
     @Override
 	public void readFromNBT(NBTTagCompound par1NBTTagCompound)
     {
-        Iterator iterator = par1NBTTagCompound.func_150296_c().iterator();
-        while (iterator.hasNext())
+        for (Object o : par1NBTTagCompound.func_150296_c())
         {
-            String s = (String)iterator.next();
+            String s = (String)o;
             NBTTagCompound nbt = (NBTTagCompound)par1NBTTagCompound.getTag(s);
 
             if (!petMap.containsKey(s))
