@@ -1,6 +1,5 @@
 package drzhark.mocreatures.configuration;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MoCProperty {
@@ -21,16 +20,10 @@ public class MoCProperty {
   public enum Type {
     STRING, INTEGER, BOOLEAN, DOUBLE;
     
-    private static Type[] values = new Type[] { STRING, INTEGER, BOOLEAN, DOUBLE };
-    
-    static {
-    
-    }
-    
     public static Type tryParse(char id) {
-      for (int x = 0; x < values.length; x++) {
-        if (values[x].getID() == id)
-          return values[x]; 
+      for (Type type : Type.values()) {
+        if (type.getID() == id)
+          return type; 
       } 
       return STRING;
     }
@@ -42,20 +35,13 @@ public class MoCProperty {
   
   private boolean changed = false;
   
-  public MoCProperty() {
-    wasRead = false;
-    type = null;
-    isList = false;
-  }
+
   
   public MoCProperty(String name, String value, Type type) {
     this(name, value, type, false);
   }
   
-  public MoCProperty(String name, String value, Type type, String comment) {
-    this(name, value, type, false);
-    this.comment = comment;
-  }
+
   
   MoCProperty(String name, String value, Type type, boolean read) {
     setName(name);
@@ -69,10 +55,7 @@ public class MoCProperty {
     this(name, values, type, false);
   }
   
-  public MoCProperty(String name, List<String> values, Type type, String comment) {
-    this(name, values, type, false);
-    this.comment = comment;
-  }
+
   
   MoCProperty(String name, List<String> values, Type type, boolean read) {
     setName(name);
@@ -114,7 +97,7 @@ public class MoCProperty {
   }
   
   public boolean isBooleanValue() {
-    return ("true".equals(value.toLowerCase()) || "false".equals(value.toLowerCase()));
+    return ("true".equalsIgnoreCase(value) || "false".equalsIgnoreCase(value));
   }
   
   public boolean isDoubleValue() {
@@ -126,30 +109,7 @@ public class MoCProperty {
     } 
   }
   
-  public double getDouble(double _default) {
-    try {
-      return Double.parseDouble(value);
-    } catch (NumberFormatException e) {
-      return _default;
-    } 
-  }
-  
-  public List<String> getStringList() {
-    return valueList;
-  }
-  
-  public int[] getIntList() {
-    ArrayList<Integer> nums = new ArrayList<Integer>();
-    for (String value : valueList) {
-      try {
-        nums.add(Integer.valueOf(Integer.parseInt(value)));
-      } catch (NumberFormatException e) {}
-    } 
-    int[] primitives = new int[nums.size()];
-    for (int i = 0; i < nums.size(); i++)
-      primitives[i] = nums.get(i).intValue(); 
-    return primitives;
-  }
+
   
   public boolean isIntList() {
     for (String value : valueList) {
@@ -162,18 +122,7 @@ public class MoCProperty {
     return true;
   }
   
-  public boolean[] getBooleanList() {
-    ArrayList<Boolean> tmp = new ArrayList<Boolean>();
-    for (String value : valueList) {
-      try {
-        tmp.add(Boolean.valueOf(Boolean.parseBoolean(value)));
-      } catch (NumberFormatException e) {}
-    } 
-    boolean[] primitives = new boolean[tmp.size()];
-    for (int i = 0; i < tmp.size(); i++)
-      primitives[i] = tmp.get(i).booleanValue(); 
-    return primitives;
-  }
+
   
   public boolean isBooleanList() {
     for (String value : valueList) {
@@ -183,18 +132,7 @@ public class MoCProperty {
     return true;
   }
   
-  public double[] getDoubleList() {
-    ArrayList<Double> tmp = new ArrayList<Double>();
-    for (String value : valueList) {
-      try {
-        tmp.add(Double.valueOf(Double.parseDouble(value)));
-      } catch (NumberFormatException e) {}
-    } 
-    double[] primitives = new double[tmp.size()];
-    for (int i = 0; i < tmp.size(); i++)
-      primitives[i] = tmp.get(i).doubleValue(); 
-    return primitives;
-  }
+
   
   public boolean isDoubleList() {
     for (String value : valueList) {
@@ -215,13 +153,7 @@ public class MoCProperty {
     this.name = name;
   }
   
-  public void setValueList(List<String> list) {
-    valueList = list;
-  }
-  
-  public boolean wasRead() {
-    return wasRead;
-  }
+
   
   public Type getType() {
     return type;

@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -11,32 +12,25 @@ import java.util.TreeMap;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableSet;
 
+@SuppressWarnings({ "NullableProblems", "UnstableApiUsage" })
 public class MoCConfigCategory implements Map<String, MoCProperty> {
   private String name;
   
   private String comment;
   
-  private ArrayList<MoCConfigCategory> children = new ArrayList<MoCConfigCategory>();
+  private final List<MoCConfigCategory> children = new ArrayList<>();
   
-  private Map<String, MoCProperty> properties = new TreeMap<String, MoCProperty>();
+  private final Map<String, MoCProperty> properties = new TreeMap<>();
   
   public final MoCConfigCategory parent;
   
   private boolean changed = false;
   
   public MoCConfigCategory(String name) {
-    this(name, null, true);
+    this(name, null);
   }
   
   public MoCConfigCategory(String name, MoCConfigCategory parent) {
-    this(name, parent, true);
-  }
-  
-  public MoCConfigCategory(String name, boolean newline) {
-    this(name, null, newline);
-  }
-  
-  public MoCConfigCategory(String name, MoCConfigCategory parent, boolean newline) {
     this.name = name;
     this.parent = parent;
     if (parent != null)
@@ -44,12 +38,19 @@ public class MoCConfigCategory implements Map<String, MoCProperty> {
   }
   
   @Override
-public boolean equals(Object obj) {
+  public boolean equals(Object obj) {
     if (obj instanceof MoCConfigCategory) {
       MoCConfigCategory cat = (MoCConfigCategory)obj;
       return (name.equals(cat.name) && children.equals(cat.children));
     } 
     return false;
+  }
+  
+  @Override
+  public int hashCode() {
+    int result = name != null ? name.hashCode() : 0;
+    result = 31 * result + children.hashCode();
+    return result;
   }
   
   public String getQualifiedName() {
@@ -60,9 +61,7 @@ public boolean equals(Object obj) {
     return (parent == null) ? name : (parent.getQualifiedName() + "." + name);
   }
   
-  public MoCConfigCategory getFirstParent() {
-    return (parent == null) ? this : parent.getFirstParent();
-  }
+
   
   public boolean isChild() {
     return (parent != null);
@@ -93,9 +92,9 @@ public boolean equals(Object obj) {
   }
   
   private void write(BufferedWriter out, boolean new_line, String... data) throws IOException {
-    for (int x = 0; x < data.length; x++) {
-      if (data[x] != null)
-        out.write(data[x]); 
+    for (String s : data) {
+      if (s != null)
+        out.write(s); 
     } 
     if (new_line)
       out.write(MoCConfiguration.NEW_LINE); 
@@ -105,59 +104,59 @@ public boolean equals(Object obj) {
     String pad0 = getIndent(indent);
     String pad1 = getIndent(indent + 1);
     getIndent(indent + 2);
-    write(out, new String[] { pad0, "####################" });
-    write(out, new String[] { pad0, "# ", name });
+    write(out, pad0, "####################");
+    write(out, pad0, "# ", name);
     if (comment != null) {
-      write(out, new String[] { pad0, "#===================" });
+      write(out, pad0, "#===================");
       Splitter splitter = Splitter.onPattern("\r?\n");
       for (String line : splitter.split(comment)) {
-        write(out, new String[] { pad0, "# ", line });
+        write(out, pad0, "# ", line);
       } 
     } 
-    write(out, new String[] { pad0, "####################", MoCConfiguration.NEW_LINE });
+    write(out, pad0, "####################", MoCConfiguration.NEW_LINE);
     if (!MoCConfiguration.allowedProperties.matchesAllOf(name))
       name = '"' + name + '"'; 
-    write(out, new String[] { pad0, name, " {" });
-    MoCProperty[] props = (MoCProperty[])properties.values().toArray((Object[])new MoCProperty[properties.size()]);
-    for (int x = 0; x < props.length; x++) {
-      MoCProperty prop = props[x];
+    write(out, pad0, name, " {");
+    boolean first = true;
+    for (MoCProperty prop : properties.values()) {
       if (prop.comment != null) {
-        if (x != 0)
+        if (!first)
           out.newLine(); 
         Splitter splitter = Splitter.onPattern("\r?\n");
         for (String commentLine : splitter.split(prop.comment)) {
-          write(out, new String[] { pad1, "# ", commentLine });
+          write(out, pad1, "# ", commentLine);
         } 
       } 
+      first = false;
       String propName = prop.getName();
       if (!MoCConfiguration.allowedProperties.matchesAllOf(propName))
         propName = '"' + propName + '"'; 
       if (prop.isList()) {
         char type = prop.getType().getID();
-        write(out, false, new String[] { pad1 + String.valueOf(type), ":", propName, " <" });
+        write(out, false, pad1 + type, ":", propName, " <");
         for (int i = 0; i < prop.valueList.size(); i++) {
           String line = prop.valueList.get(i);
           if (prop.valueList.size() == i + 1) {
-            write(out, false, new String[] { line });
+            write(out, false, line);
           } else {
-            write(out, false, new String[] { line + ":" });
+            write(out, false, line + ":");
           } 
         } 
-        write(out, false, new String[] { ">", MoCConfiguration.NEW_LINE });
+        write(out, false, ">", MoCConfiguration.NEW_LINE);
       } else if (prop.getType() == null) {
-        write(out, false, new String[] { propName, "=", prop.getString() });
+        write(out, false, propName, "=", prop.getString());
       } else {
         char type = prop.getType().getID();
-        write(out, new String[] { pad1, String.valueOf(type), ":", propName, "=", prop.getString() });
+        write(out, pad1, String.valueOf(type), ":", propName, "=", prop.getString());
       } 
     } 
     for (MoCConfigCategory child : children)
       child.write(out, indent + 1); 
-    write(out, new String[] { pad0, "}", MoCConfiguration.NEW_LINE });
+    write(out, pad0, "}", MoCConfiguration.NEW_LINE);
   }
   
   private String getIndent(int indent) {
-    StringBuilder buf = new StringBuilder("");
+    StringBuilder buf = new StringBuilder();
     for (int x = 0; x < indent; x++)
       buf.append("    "); 
     return buf.toString();
