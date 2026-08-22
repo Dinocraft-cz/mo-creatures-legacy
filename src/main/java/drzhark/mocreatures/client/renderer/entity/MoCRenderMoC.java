@@ -26,12 +26,12 @@ public class MoCRenderMoC extends RenderLiving {
     }
 
     @Override
-    public void doRender(Entity entity, double d, double d1, double d2, float f, float f1)
+    public void doRender(EntityLiving entity, double d, double d1, double d2, float f, float f1)
     {
         doRenderMoC(entity, d, d1, d2, f, f1);
     }
 
-    public void doRenderMoC(Entity entity, double d, double d1, double d2, float f, float f1)
+    public void doRenderMoC(EntityLiving entity, double d, double d1, double d2, float f, float f1)
     {
         super.doRender(entity, d, d1, d2, f, f1);
 
