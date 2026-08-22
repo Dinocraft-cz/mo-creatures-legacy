@@ -12,7 +12,7 @@ public class MultiItemBlock extends ItemBlock {
         super(block);
         setHasSubtypes(true);
         //setItemName("multiBlock"); //TODO
-        setUnlocalizedName("multiBlock");
+        ((net.minecraft.item.Item)this).setUnlocalizedName("multiBlock");
     }
 
     @Override
@@ -22,6 +22,10 @@ public class MultiItemBlock extends ItemBlock {
 
     @Override
     public String getUnlocalizedName(ItemStack itemStack) {
-        return getUnlocalizedName() + "." + MoCreatures.multiBlockNames.get(itemStack.getItemDamage());
+        int meta = itemStack.getItemDamage();
+        if (meta < 0 || meta >= MoCreatures.multiBlockNames.size()) {
+            meta = 0;
+        }
+        return getUnlocalizedName() + "." + MoCreatures.multiBlockNames.get(meta);
     }
 }

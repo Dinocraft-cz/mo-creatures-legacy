@@ -29,16 +29,6 @@ public class MoCBlock extends Block
         Block block = plant.getPlant(world, x, y + 1, z);
         EnumPlantType plantType = plant.getPlantType(world, x, y + 1, z);
 
-        if (block == Blocks.cactus && this == Blocks.cactus)
-        {
-            return true;
-        }
-
-        if (block == Blocks.reeds && this == Blocks.reeds)
-        {
-            return true;
-        }
-
         if (plant instanceof BlockFlower)
         {
             return true;
@@ -46,14 +36,14 @@ public class MoCBlock extends Block
 
         switch (plantType)
         {
-            case Desert: return this == (Block)Blocks.sand;
+            case Desert: return this.getMaterial() == Material.sand;
             case Nether: return this == Blocks.soul_sand;
             case Crop:   return this == Blocks.farmland;
             case Cave:   return isSideSolid(world, x, y, z, UP);
-            case Plains: return this ==(Block)Blocks.grass || this == Blocks.dirt;
+            case Plains: return this.getMaterial() == Material.grass || this.getMaterial() == Material.ground;
             case Water:  return world.getBlock(x, y, z).getMaterial() == Material.water && world.getBlockMetadata(x, y, z) == 0;
             case Beach:
-                boolean isBeach = (this == (Block)Blocks.grass || this == Blocks.dirt || this == (Block)Blocks.sand);
+                boolean isBeach = (this.getMaterial() == Material.grass || this.getMaterial() == Material.ground || this.getMaterial() == Material.sand);
                 boolean hasWater = (world.getBlock(x - 1, y, z    ).getMaterial() == Material.water ||
                                     world.getBlock(x + 1, y, z    ).getMaterial() == Material.water ||
                                     world.getBlock(x,     y, z - 1).getMaterial() == Material.water ||
@@ -61,6 +51,6 @@ public class MoCBlock extends Block
                 return isBeach && hasWater;
         }
 
-        return false;
+        return super.canSustainPlant(world, x, y, z, direction, plant);
     }
 }
