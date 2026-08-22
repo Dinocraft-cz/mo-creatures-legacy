@@ -1,7 +1,6 @@
 package drzhark.mocreatures.command;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -26,12 +25,10 @@ import net.minecraft.util.EnumChatFormatting;
 
 public class CommandMoCSpawn extends CommandBase {
 
-    private static List<String> commands = new ArrayList<String>();
-    private static List aliases = new ArrayList<String>();
-    private static List tabCompletionStrings = new ArrayList<String>();
+    private static final List<String> aliases = new ArrayList<>();
+    private static final List<String> tabCompletionStrings = new ArrayList<>();
 
     static {
-        commands.add("/mocspawn <horse|ostrich|scorpion|elephant|wyvern> <int>");
         aliases.add("mocspawn");
         tabCompletionStrings.add("horse");
         tabCompletionStrings.add("ostrich");
@@ -48,7 +45,7 @@ public class CommandMoCSpawn extends CommandBase {
     }
 
     @Override
-	public List getCommandAliases()
+	public List<String> getCommandAliases()
     {
         return aliases;
     }
@@ -57,9 +54,10 @@ public class CommandMoCSpawn extends CommandBase {
      * Adds the strings available in this command to the given list of tab completion options.
      */
     @Override
-	public List addTabCompletionOptions(ICommandSender par1ICommandSender, String[] par2ArrayOfStr)
+    @SuppressWarnings("unchecked")
+	public List<String> addTabCompletionOptions(ICommandSender par1ICommandSender, String[] par2ArrayOfStr)
     {
-        return getListOfStringsMatchingLastWord(par2ArrayOfStr, (String[])tabCompletionStrings.toArray(new String[tabCompletionStrings.size()]));
+        return getListOfStringsMatchingLastWord(par2ArrayOfStr, tabCompletionStrings.toArray(new String[0]));
     }
 
     /**
@@ -129,7 +127,7 @@ public class CommandMoCSpawn extends CommandBase {
             else if (entityType.equalsIgnoreCase("wyvern"))
             {
                 specialEntity = new MoCEntityWyvern(player.worldObj);
-                specialEntity.setMoCAge(180);;
+                specialEntity.setMoCAge(180);
             }
             else
             {
@@ -161,27 +159,27 @@ public class CommandMoCSpawn extends CommandBase {
             }
             
             
-            if (entityType.equalsIgnoreCase("horse"))
+            if (specialEntity instanceof MoCEntityHorse)
             {
-                specialEntity.getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(((MoCEntityHorse) specialEntity).calculateMaxHealth()); //set max health to the new type
-                specialEntity.getEntityAttribute(SharedMonsterAttributes.movementSpeed).setBaseValue(((MoCEntityHorse) specialEntity).getCustomSpeed());
+                if (specialEntity.getEntityAttribute(SharedMonsterAttributes.maxHealth) != null) specialEntity.getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(((MoCEntityHorse) specialEntity).calculateMaxHealth());
+                if (specialEntity.getEntityAttribute(SharedMonsterAttributes.movementSpeed) != null) specialEntity.getEntityAttribute(SharedMonsterAttributes.movementSpeed).setBaseValue(specialEntity.getCustomSpeed());
             }
-            else if (entityType.equalsIgnoreCase("ostrich"))
+            else if (specialEntity instanceof MoCEntityOstrich)
             {
-                specialEntity.getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(((MoCEntityOstrich) specialEntity).calculateMaxHealth());
+                if (specialEntity.getEntityAttribute(SharedMonsterAttributes.maxHealth) != null) specialEntity.getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(((MoCEntityOstrich) specialEntity).calculateMaxHealth());
             }
-            else if (entityType.equalsIgnoreCase("elephant"))
+            else if (specialEntity instanceof MoCEntityElephant)
             {
-                specialEntity.getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(((MoCEntityElephant) specialEntity).calculateMaxHealth()); //set max health to the new type
-                specialEntity.getEntityAttribute(SharedMonsterAttributes.movementSpeed).setBaseValue(((MoCEntityElephant) specialEntity).getCustomSpeed());
+                if (specialEntity.getEntityAttribute(SharedMonsterAttributes.maxHealth) != null) specialEntity.getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(((MoCEntityElephant) specialEntity).calculateMaxHealth());
+                if (specialEntity.getEntityAttribute(SharedMonsterAttributes.movementSpeed) != null) specialEntity.getEntityAttribute(SharedMonsterAttributes.movementSpeed).setBaseValue(specialEntity.getCustomSpeed());
             }
-            else if (entityType.equalsIgnoreCase("dolphin"))
+            else if (specialWaterEntity != null)
             {
-                specialWaterEntity.getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(30.0D);
+                if (specialWaterEntity.getEntityAttribute(SharedMonsterAttributes.maxHealth) != null) specialWaterEntity.getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(30.0D);
             }
-            else if (entityType.equalsIgnoreCase("wyvern"))
+            else if (specialEntity instanceof MoCEntityWyvern)
             {
-                specialEntity.getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(((MoCEntityWyvern) specialEntity).getType() >= 5 ? 80.0D : 40.0D);
+                if (specialEntity.getEntityAttribute(SharedMonsterAttributes.maxHealth) != null) specialEntity.getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(specialEntity.getType() >= 5 ? 80.0D : 40.0D);
             }
             
 
@@ -217,24 +215,6 @@ public class CommandMoCSpawn extends CommandBase {
         else
         {
             iCommandSender.addChatMessage(new ChatComponentTranslation(EnumChatFormatting.RED + "/mocspawn <entity> <type as a number>"));
-        }
-    }
-
-    /**
-     * Returns a sorted list of all possible commands for the given ICommandSender.
-     */
-    protected List getSortedPossibleCommands(ICommandSender par1ICommandSender)
-    {
-        Collections.sort(commands);
-        return commands;
-    }
-
-    public void sendCommandHelp(ICommandSender sender)
-    {
-        sender.addChatMessage(new ChatComponentTranslation("\u00a72Listing MoCreatures commands"));
-        for (int i = 0; i < commands.size(); i++)
-        {
-            sender.addChatMessage(new ChatComponentTranslation(commands.get(i)));
         }
     }
 }
