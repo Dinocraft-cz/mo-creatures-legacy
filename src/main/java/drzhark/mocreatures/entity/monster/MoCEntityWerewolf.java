@@ -31,7 +31,7 @@ public class MoCEntityWerewolf extends MoCEntityMob {
     private int transformCounter;
     private int textureCounter;
     
-    private int attackDamage = worldObj.difficultySetting.getDifficultyId() + 3;
+    private int attackDamage = (worldObj == null || worldObj.difficultySetting == null ? 2 : worldObj.difficultySetting.getDifficultyId()) + 3;
 
     public MoCEntityWerewolf(World world)
     {
@@ -821,7 +821,7 @@ public class MoCEntityWerewolf extends MoCEntityMob {
             }
             if (rand.nextInt(300) == 0)
             {
-                entityAge -= 100 * worldObj.difficultySetting.getDifficultyId();
+                entityAge -= 100 * (worldObj == null || worldObj.difficultySetting == null ? 2 : worldObj.difficultySetting.getDifficultyId());
                 if (entityAge < 0)
                 {
                     entityAge = 0;

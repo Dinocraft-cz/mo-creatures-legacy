@@ -31,7 +31,7 @@ public class MoCEntityScorpion extends MoCEntityMob {
     public int mouthCounter;
     public int armCounter;
     private int hideCounter;
-    private int attackDamage = worldObj.difficultySetting.getDifficultyId();
+    private int attackDamage = (worldObj == null || worldObj.difficultySetting == null ? 2 : worldObj.difficultySetting.getDifficultyId());
 
     public MoCEntityScorpion(World world)
     {
@@ -267,7 +267,7 @@ public class MoCEntityScorpion extends MoCEntityMob {
         {
             Entity entityThatAttackedThisCreature = damageSource.getEntity();
 
-            if ((entityThatAttackedThisCreature != null) && (entityThatAttackedThisCreature != this) && (worldObj.difficultySetting.getDifficultyId() > 0) && getIsAdult())
+            if ((entityThatAttackedThisCreature != null) && (entityThatAttackedThisCreature != this) && ((worldObj == null || worldObj.difficultySetting == null ? 2 : worldObj.difficultySetting.getDifficultyId()) > 0) && getIsAdult())
             {
                 entityToAttack = entityThatAttackedThisCreature;
             }
@@ -282,7 +282,7 @@ public class MoCEntityScorpion extends MoCEntityMob {
     @Override
     protected Entity findPlayerToAttack()
     {
-        if (worldObj.difficultySetting.getDifficultyId() > 0 && (!worldObj.isDaytime()) && getIsAdult())// only attacks player at night
+        if ((worldObj == null || worldObj.difficultySetting == null ? 2 : worldObj.difficultySetting.getDifficultyId()) > 0 && (!worldObj.isDaytime()) && getIsAdult())// only attacks player at night
         {
             EntityPlayer entityPlayer = worldObj.getClosestVulnerablePlayerToEntity(this, 12D);
             if ((entityPlayer != null)) { return entityPlayer; }

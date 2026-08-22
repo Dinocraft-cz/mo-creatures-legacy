@@ -31,7 +31,7 @@ public class MoCEntityWraith extends MoCEntityMob
 	protected void applyEntityAttributes()
     {
         super.applyEntityAttributes();
-        getEntityAttribute(SharedMonsterAttributes.attackDamage).setBaseValue(worldObj.difficultySetting.getDifficultyId() + 1); // setAttackStrength
+        getEntityAttribute(SharedMonsterAttributes.attackDamage).setBaseValue((worldObj == null || worldObj.difficultySetting == null ? 2 : worldObj.difficultySetting.getDifficultyId()) + 1); // setAttackStrength
         getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(10.0D);
     }
 

@@ -31,7 +31,7 @@ public class MoCEntityWWolf extends MoCEntityMob {
 
     public int mouthCounter;
     public int tailCounter;
-    private int attackDamage = worldObj.difficultySetting.getDifficultyId() + 1;
+    private int attackDamage = (worldObj == null || worldObj.difficultySetting == null ? 2 : worldObj.difficultySetting.getDifficultyId()) + 1;
 
     public MoCEntityWWolf(World world)
     {

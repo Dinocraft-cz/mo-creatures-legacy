@@ -23,7 +23,7 @@ public class MoCEntityThrowableBlockForGolem extends Entity {
     private double oldPosX;
     private double oldPosY;
     private double oldPosZ;
-    private int attackDamage = worldObj.difficultySetting.getDifficultyId() == 3 ? 3 : 2;
+    private int attackDamage = (worldObj == null || worldObj.difficultySetting == null ? 2 : worldObj.difficultySetting.getDifficultyId()) == 3 ? 3 : 2;
 
     public MoCEntityThrowableBlockForGolem(World world)
     {

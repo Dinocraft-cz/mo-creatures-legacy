@@ -31,7 +31,7 @@ public class MoCEntitySilverSkeleton extends MoCEntityMob
     {
       super.applyEntityAttributes();
       getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(25.0D);
-      getEntityAttribute(SharedMonsterAttributes.attackDamage).setBaseValue(worldObj.difficultySetting.getDifficultyId() * 3);
+      getEntityAttribute(SharedMonsterAttributes.attackDamage).setBaseValue((worldObj == null || worldObj.difficultySetting == null ? 2 : worldObj.difficultySetting.getDifficultyId()) * 3);
     }
 
     @Override

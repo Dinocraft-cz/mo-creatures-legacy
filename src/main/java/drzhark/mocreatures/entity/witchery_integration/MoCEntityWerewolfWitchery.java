@@ -28,7 +28,7 @@ public class MoCEntityWerewolfWitchery extends MoCEntityMob {
     private int transformCounter;
     private int villagerProfession = 0;
     private int skinID;
-    private int attackDamage = worldObj.difficultySetting.getDifficultyId() + 3;
+    private int attackDamage = (worldObj == null || worldObj.difficultySetting == null ? 2 : worldObj.difficultySetting.getDifficultyId()) + 3;
 
     public MoCEntityWerewolfWitchery(World world)
     {
@@ -531,7 +531,7 @@ public class MoCEntityWerewolfWitchery extends MoCEntityMob {
             }
             if (rand.nextInt(300) == 0)
             {
-                entityAge -= 100 * worldObj.difficultySetting.getDifficultyId();
+                entityAge -= 100 * (worldObj == null || worldObj.difficultySetting == null ? 2 : worldObj.difficultySetting.getDifficultyId());
                 if (entityAge < 0)
                 {
                     entityAge = 0;

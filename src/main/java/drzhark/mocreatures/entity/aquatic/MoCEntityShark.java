@@ -146,7 +146,7 @@ public class MoCEntityShark extends MoCEntityTameableAquatic {
                 entityDropItem(new ItemStack(MoCreatures.sharkTeeth, 1, 0), 0.0F);
             }
         }
-        else if ((worldObj.difficultySetting.getDifficultyId() > 0) && (getMoCAge() > 150) && dropChance < 40)
+        else if ((worldObj == null || worldObj.difficultySetting == null || worldObj.difficultySetting.getDifficultyId() > 0) && (getMoCAge() > 150) && dropChance < 40)
         {
             int amountOfEggsToDrop = rand.nextInt(3);
             for (int index1 = 0; index1 < amountOfEggsToDrop; index1++)
