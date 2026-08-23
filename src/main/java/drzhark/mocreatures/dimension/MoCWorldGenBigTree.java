@@ -17,22 +17,26 @@ public class MoCWorldGenBigTree extends WorldGenAbstractTree
     }
 
     /**
- * Generates a Big Tree with the given log and leaf block IDs
- * @param par1
- * @param logblockID
- * @param leafblockID
- * @param trunksize
- * @param heightlimit
- * @param leafdist
- */
+     * Generates a Big Tree with the given log and leaf block IDs
+     * @param par1 True to notify adjacent blocks of update
+     * @param logblock The block to use for the trunk
+     * @param logmetadata The metadata to use for the trunk block
+     * @param leafblock The block to use for the leaves
+     * @param leafmetadata The metadata to use for the leaf block
+     * @param trunksize The size of the trunk
+     * @param heightlimit The height limit
+     * @param leafdist The leaf distance limit
+     */
     public MoCWorldGenBigTree(boolean par1, Block logblock, int logmetadata, Block leafblock, int leafmetadata, int trunksize, int heightlimit, int leafdist)
     {
         super(par1);
         trunkSize = trunksize;
         heightLimitLimit= heightlimit;
         leafDistanceLimit = leafdist;
-        MetadataLog = logmetadata;
-        MetadataLeaf = leafmetadata;
+        metadataLog = logmetadata;
+        metadataLeaf = leafmetadata;
+        logBlock = logblock;
+        leafBlock = leafblock;
     }
 
     /**
@@ -54,8 +58,10 @@ public class MoCWorldGenBigTree extends WorldGenAbstractTree
     double branchSlope = 0.381D;
     double scaleWidth = 1.0D;
     double leafDensity = 1.0D;
-    private int MetadataLog;
-    private int MetadataLeaf;
+    private int metadataLog;
+    private int metadataLeaf;
+    private Block logBlock = MoCreatures.mocLog;
+    private Block leafBlock = MoCreatures.mocLeaf;
     
     /**
      * Currently always 1, can be set to 2 in the class constructor to generate a double-sized tree trunk for big trees.
@@ -162,15 +168,16 @@ public class MoCWorldGenBigTree extends WorldGenAbstractTree
         System.arraycopy(var2, 0, leafNodes, 0, var4);
     }
 
-    void func_150529_a(int par1, int par2, int par3, float par4, byte par5, Block par6)
+    void func_150529_a(int par1, int par2, int par3, float par4, Block par6)
     {
+        byte par5 = 1;
         int var7 = (int)(par4 + 0.618D);
         byte var8 = otherCoordPairs[par5];
         byte var9 = otherCoordPairs[par5 + 3];
         int[] var10 = new int[] {par1, par2, par3};
         int[] var11 = new int[] {0, 0, 0};
         int var12 = -var7;
-        int var13 = -var7;
+        int var13;
 
         for (var11[par5] = var10[par5]; var12 <= var7; ++var12)
         {
@@ -190,13 +197,13 @@ public class MoCWorldGenBigTree extends WorldGenAbstractTree
                     var11[var9] = var10[var9] + var13;
                     Block block = worldObj.getBlock(var11[0], var11[1], var11[2]);
 
-                    if (block != Blocks.air && block != MoCreatures.mocLeaf)//BlockLeafID)//Block.leaves)
+                    if (block != Blocks.air && block != leafBlock)
                     {
                         ++var13;
                     }
                     else
                     {
-                        setBlockAndNotifyAdequately(worldObj, var11[0], var11[1], var11[2], par6, MetadataLeaf);
+                        setBlockAndNotifyAdequately(worldObj, var11[0], var11[1], var11[2], par6, metadataLeaf);
                         ++var13;
                     }
                 }
@@ -252,7 +259,7 @@ public class MoCWorldGenBigTree extends WorldGenAbstractTree
         for (int var5 = par2 + leafDistanceLimit; var4 < var5; ++var4)
         {
             float var6 = leafSize(var4 - par2);
-            func_150529_a(par1, var4, par3, var6, (byte)1, MoCreatures.mocLeaf);
+            func_150529_a(par1, var4, par3, var6, leafBlock);
         }
     }
 
@@ -304,17 +311,7 @@ public class MoCWorldGenBigTree extends WorldGenAbstractTree
                 int var19 = Math.abs(var14[2] - par1ArrayOfInteger[2]);
                 int var20 = Math.max(var18, var19);
 
-                if (var20 > 0)
-                {
-                    if (var18 == var20)
-                    {
-                    }
-                    else if (var19 == var20)
-                    {
-                    }
-                }
-
-                setBlockAndNotifyAdequately(worldObj, var14[0], var14[1], var14[2], par3, MetadataLog);//var17);
+                setBlockAndNotifyAdequately(worldObj, var14[0], var14[1], var14[2], par3, metadataLog);
             }
         }
     }
@@ -355,19 +352,19 @@ public class MoCWorldGenBigTree extends WorldGenAbstractTree
         int var4 = basePos[2];
         int[] var5 = new int[] {var1, var2, var4};
         int[] var6 = new int[] {var1, var3, var4};
-        func_150530_a(var5, var6, MoCreatures.mocLog);
+        func_150530_a(var5, var6, logBlock);
 
         if (trunkSize == 2)
         {
             ++var5[0];
             ++var6[0];
-            func_150530_a(var5, var6, MoCreatures.mocLog);
+            func_150530_a(var5, var6, logBlock);
             ++var5[2];
             ++var6[2];
-            func_150530_a(var5, var6, MoCreatures.mocLog);
-            var5[0] += -1;
-            var6[0] += -1;
-            func_150530_a(var5, var6, MoCreatures.mocLog);
+            func_150530_a(var5, var6, logBlock);
+            var5[0] -= 1;
+            var6[0] -= 1;
+            func_150530_a(var5, var6, logBlock);
         }
     }
 
@@ -388,7 +385,7 @@ public class MoCWorldGenBigTree extends WorldGenAbstractTree
 
             if (leafNodeNeedsBase(var6))
             {
-                func_150530_a(var3, var5, MoCreatures.mocLog);
+                func_150530_a(var3, var5, logBlock);
             }
         }
     }

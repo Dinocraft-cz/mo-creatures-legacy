@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-import drzhark.mocreatures.MoCreatures;
 import net.minecraft.world.ChunkPosition;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraft.world.biome.WorldChunkManager;
@@ -12,11 +11,11 @@ import net.minecraft.world.biome.WorldChunkManager;
 public class WorldChunkManagerWyvernLair extends WorldChunkManager
 {
     /** The biome generator object. */
-    private BiomeGenBase biomeGenerator = MoCreatures.WyvernLairBiome;;
-    private float hellTemperature;
+    private final BiomeGenBase biomeGenerator;
+    private final float hellTemperature;
 
     /** The rainfall in the world */
-    private float rainfall;
+    private final float rainfall;
 
     public WorldChunkManagerWyvernLair(BiomeGenBase par1BiomeGenBase, float par2, float par3)
     {

@@ -8,91 +8,88 @@ import net.minecraft.world.gen.feature.WorldGenerator;
 
 public class MoCWorldGenPortal extends WorldGenerator
 {
-    private Block pillarBlock;
-    private Block stairBlock;
-    private Block wallBlock;
-    private Block centerBlock;
-    private int pillarMetadata;
-    private int stairMetadata;
-    private int wallMetadata;
-    private int centerMetadata;
+    private final Block pillarBlock;
+    private final Block stairBlock;
+    private final Block wallBlock;
+    private final Block centerBlock;
+    private final int pillarMetadata;
+    private final int wallMetadata;
+    private final int centerMetadata;
 
-    public MoCWorldGenPortal(Block pillar, int pillarMeta, Block stair, int stairMeta, Block wall, int wallMeta, Block center, int centerMeta)
+    public MoCWorldGenPortal(Block pillar, int pillarMeta, Block stair, Block wall, int wallMeta, Block center, int centerMeta)
     {        
         pillarBlock = pillar;
         stairBlock = stair;
         wallBlock = wall;
         centerBlock = center;
         pillarMetadata = pillarMeta;
-        stairMetadata = stairMeta;
         wallMetadata = wallMeta;
         centerMetadata = centerMeta;
     }
     
-    public boolean generatePillar(World world, int x, int y, int z)
+    public void generatePillar(World world, int x, int y, int z)
     {
-        for (int nY = y; nY < y+6; nY++)
+        for (int nY = y; nY < y + 6; nY++)
         {
             world.setBlock(x, nY, z, pillarBlock, pillarMetadata, 2);
         }
-        return true;
     }
     
     
     @Override
 	public boolean generate(World world, Random random, int x, int y, int z)
     {
-        if(world.getBlock(x, y , z) == centerBlock || world.getBlock(x, y-1 , z) == centerBlock || world.getBlock(x, y+1 , z) == centerBlock)
+        if (world.getBlock(x, y, z) == centerBlock || world.getBlock(x, y - 1, z) == centerBlock || world.getBlock(x, y + 1, z) == centerBlock)
         {
             return true;
         }
 
-        if(world.isAirBlock(x, y , z) || !world.isAirBlock(x, y+1, z))
+        if (world.isAirBlock(x, y, z) || !world.isAirBlock(x, y + 1, z))
         {
             return false;
         }
 
-        stairMetadata = 2;
-        for (int nZ = z-3; nZ < z+3; nZ = nZ+5)
+        for (int nZ = z - 3; nZ < z + 3; nZ += 5)
         {
-            for (int nX = x-2; nX < x+2; nX++)
+            int currentStairMeta = 2;
+            if (nZ > z)
             {
-                if (nZ > z)
-                {
-                    stairMetadata = 3;
-                }
-                world.setBlock(nX, y+1, nZ, stairBlock, stairMetadata, 2);
+                currentStairMeta = 3;
+            }
+            for (int nX = x - 2; nX < x + 2; nX++)
+            {
+                world.setBlock(nX, y + 1, nZ, stairBlock, currentStairMeta, 2);
             }
         }
 
-        for (int nX = x-2; nX < x+2; nX++)
+        for (int nX = x - 2; nX < x + 2; nX++)
         {
-            for (int nZ = z-2; nZ < z+2; nZ++)
+            for (int nZ = z - 2; nZ < z + 2; nZ++)
             {
-                world.setBlock(nX, y+1, nZ, wallBlock, wallMetadata, 2);
+                world.setBlock(nX, y + 1, nZ, wallBlock, wallMetadata, 2);
             }
         }
 
-        for (int nX = x-1; nX < x+1; nX++)
+        for (int nX = x - 1; nX < x + 1; nX++)
         {
-            for (int nZ = z-1; nZ < z+1; nZ++)
+            for (int nZ = z - 1; nZ < z + 1; nZ++)
             {
-                world.setBlock(nX, y+1, nZ, centerBlock, centerMetadata, 2);
+                world.setBlock(nX, y + 1, nZ, centerBlock, centerMetadata, 2);
             }
         }
 
-        for (int j = x-3; j <x+3; j = j+5)
+        for (int j = x - 3; j < x + 3; j += 5)
         {
-            for (int nZ = z-3; nZ < z+3; nZ++)
+            for (int nZ = z - 3; nZ < z + 3; nZ++)
             {
-                world.setBlock(j, y+6, nZ, wallBlock, wallMetadata, 2);
+                world.setBlock(j, y + 6, nZ, wallBlock, wallMetadata, 2);
             }
         }
 
-        generatePillar(world, x-3, y, z-3);
-        generatePillar(world, x-3, y, z+2);
-        generatePillar(world, x+2, y, z-3);
-        generatePillar(world, x+2, y, z+2);
+        generatePillar(world, x - 3, y, z - 3);
+        generatePillar(world, x - 3, y, z + 2);
+        generatePillar(world, x + 2, y, z - 3);
+        generatePillar(world, x + 2, y, z + 2);
 
         return true;
     }

@@ -30,7 +30,7 @@ public class MoCDirectTeleporter extends Teleporter
     
     public void createPortal(World world, Random par2Random)
     {
-        MoCWorldGenPortal myPortal = new MoCWorldGenPortal(Blocks.quartz_block, 2, Blocks.quartz_stairs, 0, Blocks.quartz_block, 1, Blocks.quartz_block, 0);
+        MoCWorldGenPortal myPortal = new MoCWorldGenPortal(Blocks.quartz_block, 2, Blocks.quartz_stairs, Blocks.quartz_block, 1, Blocks.quartz_block, 0);
         for (int i = 0; i< 14; i++)
         {
             if (!portalDone)

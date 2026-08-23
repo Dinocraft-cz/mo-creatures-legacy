@@ -45,7 +45,7 @@ public class WorldProviderWyvernEnd extends WorldProviderSurface
 
     @SideOnly(Side.CLIENT)
 
-    /**
+    /*
      * Returns array with sunrise/sunset colors
      */
     @Override
@@ -57,7 +57,7 @@ public class WorldProviderWyvernEnd extends WorldProviderSurface
     @Override
 	@SideOnly(Side.CLIENT)
 
-    /**
+    /*
      * Return vectorThreeDimensional with biome specific fog color
      */
     public Vec3 getFogColor(float par1, float par2)
@@ -112,7 +112,7 @@ public class WorldProviderWyvernEnd extends WorldProviderSurface
     @Override
 	@SideOnly(Side.CLIENT)
 
-    /**
+    /*
      * the y level at which clouds are rendered.
      */
     public float getCloudHeight()
@@ -163,7 +163,7 @@ public class WorldProviderWyvernEnd extends WorldProviderSurface
     @Override
 	@SideOnly(Side.CLIENT)
 
-    /**
+    /*
      * Returns true if the given X,Z coordinate should show environmental fog.
      */
     public boolean doesXZShowFog(int par1, int par2)

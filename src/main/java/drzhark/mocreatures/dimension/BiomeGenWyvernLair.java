@@ -13,20 +13,20 @@ import net.minecraft.world.gen.feature.WorldGenShrub;
 import net.minecraft.world.gen.feature.WorldGenVines;
 import net.minecraft.world.gen.feature.WorldGenerator;
 
-public class BiomeGenWyvernLair extends BiomeGenBase
-{
+public class BiomeGenWyvernLair extends BiomeGenBase {
 
-    private MoCWorldGenBigTree wyvernGenBigTree;
-    private WorldGenShrub worldGenShrub;
+    private final MoCWorldGenBigTree wyvernGenBigTree;
+    private final WorldGenShrub worldGenShrub;
 
-    public BiomeGenWyvernLair(int par1)
-    {
+    @SuppressWarnings("unchecked")
+    public BiomeGenWyvernLair(int par1) {
         super(par1);
         spawnableCreatureList.clear();
         spawnableMonsterList.clear();
         spawnableWaterCreatureList.clear();
         spawnableCreatureList.add(new SpawnListEntry(MoCEntityBunny.class, 6, 2, 3));
-        //spawnableCreatureList.add(new SpawnListEntry(MoCEntityDragonfly.class, 8, 2, 3));
+        // spawnableCreatureList.add(new SpawnListEntry(MoCEntityDragonfly.class, 8, 2,
+        // 3));
         spawnableCreatureList.add(new SpawnListEntry(MoCEntitySnake.class, 6, 1, 2));
         spawnableCreatureList.add(new SpawnListEntry(MoCEntityWyvern.class, 10, 1, 4));
         topBlock = MoCreatures.mocGrass;
@@ -43,14 +43,10 @@ public class BiomeGenWyvernLair extends BiomeGenBase
      * Gets a WorldGen appropriate for this biome.
      */
     @Override
-    public WorldGenAbstractTree func_150567_a(Random par1Random)
-    {
-        if (par1Random.nextInt(10) == 0)
-        {
+    public WorldGenAbstractTree func_150567_a(Random par1Random) {
+        if (par1Random.nextInt(10) == 0) {
             return wyvernGenBigTree;
-        }
-        else
-        {
+        } else {
             return worldGenShrub;
         }
     }
@@ -59,20 +55,17 @@ public class BiomeGenWyvernLair extends BiomeGenBase
      * Gets a WorldGen appropriate for this biome.
      */
     @Override
-    public WorldGenerator getRandomWorldGenForGrass(Random par1Random)
-    {
+    public WorldGenerator getRandomWorldGenForGrass(Random par1Random) {
         return new WorldGenWyvernGrass(MoCreatures.mocTallGrass, 0);
     }
 
     @Override
-    public void decorate(World world, Random par2Random, int par3, int par4)
-    {
+    public void decorate(World world, Random par2Random, int par3, int par4) {
         super.decorate(world, par2Random, par3, par4);
 
         WorldGenVines var5 = new WorldGenVines();
 
-        for (int var6 = 0; var6 < 50; ++var6)
-        {
+        for (int var6 = 0; var6 < 50; ++var6) {
             int var7 = par3 + par2Random.nextInt(16) + 8;
             byte var8 = 64;
             int var9 = par4 + par2Random.nextInt(16) + 8;

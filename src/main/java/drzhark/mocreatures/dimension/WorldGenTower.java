@@ -9,8 +9,8 @@ import net.minecraft.world.gen.feature.WorldGenerator;
 
 public class WorldGenTower extends WorldGenerator
 {
-    private Block MainBlock;
-    private Block brickBlock;
+    private final Block MainBlock;
+    private final Block brickBlock;
     private int MainMetadata;
     public WorldGenTower(Block Main, Block Brick, Block Deco)
     {        

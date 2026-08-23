@@ -11,8 +11,8 @@ import net.minecraft.world.gen.feature.WorldGenerator;
 public class WorldGenWyvernGrass extends WorldGenerator
 {
     /** Stores ID for WorldGenTallGrass */
-    private Block tallGrass;
-    private int tallGrassMetadata;
+    private final Block tallGrass;
+    private final int tallGrassMetadata;
 
     public WorldGenWyvernGrass(Block block, int metaData)
     {

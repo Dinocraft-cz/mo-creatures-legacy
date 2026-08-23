@@ -44,7 +44,8 @@ public class BiomeWyvernDecorator extends BiomeDecorator
     /**
      * The method that does the work of actually decorating chunks
     */
-    protected void func_150513_a(BiomeGenBase biomegenbase)
+    @Override
+    protected void genDecorations(BiomeGenBase biomegenbase)
     {
         MinecraftForge.EVENT_BUS.post(new DecorateBiomeEvent.Pre(currentWorld, randomGenerator, chunk_X, chunk_Z));
         generateOres();
@@ -158,9 +159,10 @@ public class BiomeWyvernDecorator extends BiomeDecorator
             l = chunk_Z + randomGenerator.nextInt(16) + 8;
             if (currentWorld.getHeightValue(k, l) == 0) continue;
             
-            for (i1 = randomGenerator.nextInt(currentWorld.getHeightValue(k, l) * 2); i1 > 0 && currentWorld.isAirBlock(k, i1 - 1, l); --i1)
+            i1 = randomGenerator.nextInt(currentWorld.getHeightValue(k, l) * 2);
+            while (i1 > 0 && currentWorld.isAirBlock(k, i1 - 1, l))
             {
-                ;
+                --i1;
             }
 
             waterlilyGen.generate(currentWorld, randomGenerator, k, i1, l);
